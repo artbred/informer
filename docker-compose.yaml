@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+
+    informer:
+        restart: always
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./data:/go/src/informer/data
+        ports:
+            - 127.0.0.1:3000:3000
