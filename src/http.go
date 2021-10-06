@@ -3,12 +3,10 @@ package src
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go.uber.org/ratelimit"
 	"gopkg.in/tucnak/telebot.v2"
 	"net/http"
 )
 
-var limiter ratelimit.Limiter
 
 type SendMessageTelegramRequest struct {
 	Token string `json:"chat_token"`
@@ -16,8 +14,6 @@ type SendMessageTelegramRequest struct {
 }
 
 func SendTelegramMessage (c echo.Context) error {
-	limiter.Take()
-
 	req := &SendMessageTelegramRequest{}
 	if err := c.Bind(req); err != nil {
 		return JsonResponse(c, http.StatusBadRequest, err.Error())
@@ -27,7 +23,7 @@ func SendTelegramMessage (c echo.Context) error {
 		return JsonResponse(c, http.StatusBadRequest, err.Error())
 	}
 
-	if _, err := Bot.Send(&telebot.Chat{ID:chatID}, req.Message); err != nil {
+	if _, err := Bot.Send(&telebot.Chat{ID:chatID}, req.Message, telebot.NoPreview); err != nil {
 		return JsonResponse(c, http.StatusInternalServerError, err.Error())
 	}
 
@@ -35,8 +31,6 @@ func SendTelegramMessage (c echo.Context) error {
 }
 
 func StartHttpServer (serverPort string) {
-	limiter = ratelimit.New(1)
-
 	e := echo.New()
 
 	e.Use(middleware.Logger())
