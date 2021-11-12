@@ -18,6 +18,16 @@ func main () {
 	b.Handle("/start@" + b.Me.Username, func(m *tb.Message) {
 		token := src.RandomToken(8)
 
+		chat, exists, err := src.GetChat(m.Chat.ID); if err != nil {
+			b.Send(m.Chat, "Please try again later")
+			return
+		}
+
+		if exists {
+			b.Send(m.Chat, chat.ChatToken)
+			return
+		}
+
 		if err := src.AddChat(token, m.Chat.ID); err != nil {
 			b.Send(m.Chat, "Please try again later")
 			return
