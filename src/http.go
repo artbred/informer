@@ -30,6 +30,21 @@ func SendTelegramMessage (c echo.Context) error {
 	return JsonResponse(c, http.StatusCreated, "Send!")
 }
 
+type CallPhoneRequest struct {
+	Phone string `json:"phone"`
+	Message string `json:"message"`
+}
+
+func CallPhone (c echo.Context) error {
+	req := &CallPhoneRequest{}
+	if err := c.Bind(req); err != nil {
+		return JsonResponse(c, http.StatusBadRequest, err.Error())
+	}
+
+	Call(req.Phone, req.Message)
+	return JsonResponse(c, http.StatusCreated, "Send!")
+}
+
 func StartHttpServer (serverPort string) {
 	e := echo.New()
 
@@ -37,5 +52,7 @@ func StartHttpServer (serverPort string) {
 	e.Use(middleware.Recover())
 
 	e.POST("/telegram/send-message", SendTelegramMessage)
-	e.Logger.Fatal(e.Start(serverPort))
+	e.POST("/call", CallPhone)
+
+	e.Logger.Fatal(e.Start(":"+serverPort))
 }

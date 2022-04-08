@@ -5,6 +5,7 @@ import (
 	"github.com/joho/godotenv"
 	tb "gopkg.in/tucnak/telebot.v2"
 	"os"
+	"strings"
 )
 
 func main () {
@@ -34,6 +35,11 @@ func main () {
 		}
 
 		b.Send(m.Chat, token)
+	})
+
+	b.Handle("/call", func(m *tb.Message) {
+		split := strings.Split(m.Payload, ":")
+		src.Call(split[0], split[1])
 	})
 
 	err := b.SetCommands([]tb.Command{{Text: "start", Description: "Activate chat and get token"}})
