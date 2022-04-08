@@ -41,8 +41,11 @@ func CallPhone (c echo.Context) error {
 		return JsonResponse(c, http.StatusBadRequest, err.Error())
 	}
 
-	Call(req.Phone, req.Message)
-	return JsonResponse(c, http.StatusCreated, "Send!")
+	if ok := Call(req.Phone + ":" + req.Message); ok {
+		return JsonResponse(c, http.StatusCreated, "Called!")
+	}
+
+	return JsonResponse(c, http.StatusInternalServerError, "Error")
 }
 
 func StartHttpServer (serverPort string) {

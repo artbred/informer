@@ -16,7 +16,7 @@ type CallResponse struct {
 
 var baseUrl string
 
-func Call(to, message string) bool {
+func Call(data string) bool {
 	base, err := url.Parse(baseUrl)
 	if err != nil {
 		logrus.Errorf("Voximplant parse base url, %s", err)
@@ -24,7 +24,7 @@ func Call(to, message string) bool {
 	}
 
 	params := url.Values{}
-	params.Add("script_custom_data", fmt.Sprintf("%s:%s", to, message))
+	params.Add("script_custom_data", data)
 	base.RawQuery += params.Encode()
 
 	client := http.Client{}
