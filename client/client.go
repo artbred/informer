@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -43,12 +42,10 @@ func (c *Client) SendTelegramMessage(message, chatToken string) (err error) {
 	}
 
 	b, err := json.Marshal(req); if err != nil {
-		logrus.WithError(err).Errorf("Can't send message to telegram chat")
 		return
 	}
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(b)); if err != nil {
-		logrus.WithError(err).Errorf("Can't send message to telegram chat")
 		return
 	}
 
@@ -68,12 +65,10 @@ func (c *Client) Call(message, phone string) (err error) {
 	}
 
 	b, err := json.Marshal(req); if err != nil {
-		logrus.WithError(err).Errorf("Can't send message to telegram chat")
 		return
 	}
 
 	res, err := http.Post(url, "application/json", bytes.NewBuffer(b)); if err != nil {
-		logrus.WithError(err).Errorf("Can't send message to telegram chat")
 		return
 	}
 
